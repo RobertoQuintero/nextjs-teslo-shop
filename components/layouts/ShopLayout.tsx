@@ -30,6 +30,8 @@ export const ShopLayout = ({children,pageDescription,title,imageFullUrl}:Props) 
         margin:'80px auto',
         maxWidth:'1440px',
         padding: '0 30px'
+        
+        
       }}>
         {
           children
