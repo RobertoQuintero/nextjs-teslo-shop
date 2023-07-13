@@ -1,5 +1,6 @@
 import { ShopLayout } from "@/components/layouts"
 import { ProductList } from "@/components/products"
+import { FullScreenLoading } from "@/components/ui"
 import { useProducts } from "@/hooks"
 import {  Typography } from "@mui/material"
 
@@ -15,7 +16,7 @@ const HomePage = () => {
 
       {
         isLoading
-          ? <h1>Cargando...</h1>
+          ? <FullScreenLoading />
           : <ProductList
               products={products}
             />
