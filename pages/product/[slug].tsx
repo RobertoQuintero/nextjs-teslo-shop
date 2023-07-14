@@ -1,12 +1,20 @@
 import { ShopLayout } from "@/components/layouts"
 import { ProductSlideshow, SizeSelector } from "@/components/products"
 import { ItemCounter } from "@/components/ui"
-import { initialData } from "@/database/products"
+import { dbProducts } from "@/database"
+import { getAllPoductSlug } from "@/database/dbProducts"
+import { IProduct } from "@/interfaces"
 import { Box, Button, Chip, Grid, Typography } from "@mui/material"
+import { GetServerSideProps, NextPage,GetStaticPaths,GetStaticProps  } from "next"
 
-const product= initialData.products[0]
 
-const ProductPage = () => {
+interface Props {
+  product: IProduct
+}
+
+const ProductPage:NextPage<Props> = ({product}) => {
+  console.log(product)
+  // return <h1>Hola</h1>
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -42,6 +50,55 @@ const ProductPage = () => {
       </Grid>
     </ShopLayout>
   )
+}
+
+// nextgetss
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   const product=await dbProducts.getProductsBySlug(`${ctx.query.slug}`);
+//   if(!product){
+//     return {
+//       redirect:{
+//         destination:'/',
+//         permanent:false
+//       }
+//     }
+//   }
+//   return {
+//     props: {
+//       product
+//     }
+//   }
+// }
+
+// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
+
+export const getStaticPaths: GetStaticPaths = async (ctx) => {
+  const slugs = await dbProducts.getAllPoductSlug()
+
+  return {
+    paths: slugs.map(slug=>({params:{slug:slug.slug}})),
+    fallback: "blocking"
+  }
+}
+
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  const {slug} = ctx.params as {slug:string}
+  const product=await dbProducts.getProductsBySlug(`${slug}`);
+  if(!product){
+    return {
+      redirect:{
+        destination:'/',
+        permanent:false
+      }
+    }
+  }
+  return {
+    props: {
+      product
+    },
+    revalidate: 86400,// 60 * 60 * 24
+  }
 }
 
 export default ProductPage
