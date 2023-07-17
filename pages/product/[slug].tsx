@@ -2,10 +2,9 @@ import { ShopLayout } from "@/components/layouts"
 import { ProductSlideshow, SizeSelector } from "@/components/products"
 import { ItemCounter } from "@/components/ui"
 import { dbProducts } from "@/database"
-import { getAllPoductSlug } from "@/database/dbProducts"
 import { IProduct } from "@/interfaces"
-import { Box, Button, Chip, Grid, Typography } from "@mui/material"
-import { GetServerSideProps, NextPage,GetStaticPaths,GetStaticProps  } from "next"
+import { Box, Button,  Chip,  Grid, Typography } from "@mui/material"
+import {  NextPage,GetStaticPaths,GetStaticProps  } from "next"
 
 
 interface Props {
@@ -13,8 +12,7 @@ interface Props {
 }
 
 const ProductPage:NextPage<Props> = ({product}) => {
-  console.log(product)
-  // return <h1>Hola</h1>
+  
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -35,12 +33,16 @@ const ProductPage:NextPage<Props> = ({product}) => {
                 sizes={product.sizes}
               />
             </Box>
-            {/* Agregar al carrito */}
-            <Button color='secondary' className='circular-btn'>
-              Agregar al Carrito
-            </Button>
+            {
+              product.inStock>0
+                ? <Button color='secondary' className='circular-btn'>
+                    Agregar al Carrito
+                  </Button>
+                : <Chip label='No hay disponibles' color='error' variant='outlined'/>
+            }
+            
 
-            {/* <Chip label='No hay disponibles' color='error' variant='outlined'/> */}
+            
             <Box sx={{mt:3}}>
               <Typography variant="subtitle1">Descripción</Typography>
               <Typography variant="body2">{product.description}</Typography>
