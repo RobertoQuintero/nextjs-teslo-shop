@@ -1,11 +1,13 @@
 import { ShopLayout } from "@/components/layouts"
 import { ProductSlideshow, SizeSelector } from "@/components/products"
 import { ItemCounter } from "@/components/ui"
+import { CartContext } from "@/context"
 import { dbProducts } from "@/database"
 import { ICartProduct, IProduct, ISize } from "@/interfaces"
 import { Box, Button,  Chip,  Grid, Typography } from "@mui/material"
 import {  NextPage,GetStaticPaths,GetStaticProps  } from "next"
-import { useState } from "react"
+import { useRouter } from "next/router"
+import { useContext, useState } from "react"
 
 
 interface Props {
@@ -13,6 +15,10 @@ interface Props {
 }
 
 const ProductPage:NextPage<Props> = ({product}) => {
+
+  const router = useRouter()
+
+  const {addProductToCart} = useContext(CartContext)
 
   const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
     _id: product._id,
@@ -27,6 +33,19 @@ const ProductPage:NextPage<Props> = ({product}) => {
 
   const onSelectedSize=(size:ISize)=>{
     setTempCartProduct(prev=>({...prev,size}))
+  }
+
+  const updatedQuantity=(quantity:number)=>{
+    
+    setTempCartProduct(prev=>({...prev,quantity}))
+  }
+
+  const onAddProduct=()=>{
+    if(!tempCartProduct.size)return
+
+    addProductToCart(tempCartProduct)
+    // router.push('/cart')
+    // console.log(tempCartProduct)
   }
   
   return (
@@ -43,7 +62,13 @@ const ProductPage:NextPage<Props> = ({product}) => {
 
             <Box sx={{my:2}}>
               <Typography variant='subtitle1'>Cantidad</Typography>
-              <ItemCounter/>
+              
+              <ItemCounter
+                currentValue={tempCartProduct.quantity}
+                updatedQuantity={updatedQuantity}
+                maxValue={product.inStock>10 ?10:product.inStock}
+              />
+
               <SizeSelector
                 selectedSize={tempCartProduct.size}
                 sizes={product.sizes}
@@ -52,7 +77,10 @@ const ProductPage:NextPage<Props> = ({product}) => {
             </Box>
             {
               product.inStock>0
-                ? <Button color='secondary' className='circular-btn'>
+                ? <Button 
+                    onClick={onAddProduct}
+                    color='secondary' 
+                    className='circular-btn'>
                     {
                       tempCartProduct.size
                         ? 'Agregar al Carrito'

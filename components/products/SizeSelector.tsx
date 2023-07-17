@@ -9,7 +9,6 @@ interface Props{
 }
 
 export const SizeSelector = ({selectedSize,sizes,onSelectedSize}:Props) => {
-  console.log(selectedSize)
   return (
     <Box>
       {
