@@ -1,12 +1,15 @@
-import { ISize } from "@/interfaces"
+import { ICartProduct, ISize } from "@/interfaces"
 import { Box, Button } from "@mui/material"
+import { Dispatch, SetStateAction } from "react"
 
 interface Props{
   selectedSize?: ISize
-  sizes: ISize[]
+  sizes: ISize[],
+  onSelectedSize: (size:ISize)=>void
 }
 
-export const SizeSelector = ({selectedSize,sizes}:Props) => {
+export const SizeSelector = ({selectedSize,sizes,onSelectedSize}:Props) => {
+  console.log(selectedSize)
   return (
     <Box>
       {
@@ -15,6 +18,7 @@ export const SizeSelector = ({selectedSize,sizes}:Props) => {
             key={size} 
             size='small'
             color={selectedSize===size ? 'primary':'info'}
+            onClick={()=>onSelectedSize(size)}
             >
               {size}
           </Button>

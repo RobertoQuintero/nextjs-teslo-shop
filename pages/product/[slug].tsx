@@ -2,9 +2,10 @@ import { ShopLayout } from "@/components/layouts"
 import { ProductSlideshow, SizeSelector } from "@/components/products"
 import { ItemCounter } from "@/components/ui"
 import { dbProducts } from "@/database"
-import { IProduct } from "@/interfaces"
+import { ICartProduct, IProduct, ISize } from "@/interfaces"
 import { Box, Button,  Chip,  Grid, Typography } from "@mui/material"
 import {  NextPage,GetStaticPaths,GetStaticProps  } from "next"
+import { useState } from "react"
 
 
 interface Props {
@@ -12,6 +13,21 @@ interface Props {
 }
 
 const ProductPage:NextPage<Props> = ({product}) => {
+
+  const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
+    _id: product._id,
+    image: product.images[0],
+    price: product.price,
+    size: undefined,
+    slug: product.slug,
+    title: product.title,
+    gender: product.gender,
+    quantity: 1,
+  })
+
+  const onSelectedSize=(size:ISize)=>{
+    setTempCartProduct(prev=>({...prev,size}))
+  }
   
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
@@ -29,14 +45,19 @@ const ProductPage:NextPage<Props> = ({product}) => {
               <Typography variant='subtitle1'>Cantidad</Typography>
               <ItemCounter/>
               <SizeSelector
-                selectedSize={product.sizes[0]}
+                selectedSize={tempCartProduct.size}
                 sizes={product.sizes}
+                onSelectedSize={onSelectedSize}
               />
             </Box>
             {
               product.inStock>0
                 ? <Button color='secondary' className='circular-btn'>
-                    Agregar al Carrito
+                    {
+                      tempCartProduct.size
+                        ? 'Agregar al Carrito'
+                        : 'Seleccione una talla'
+                    }
                   </Button>
                 : <Chip label='No hay disponibles' color='error' variant='outlined'/>
             }
