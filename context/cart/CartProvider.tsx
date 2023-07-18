@@ -20,8 +20,25 @@ export const CartProvider = ({children}:Props) => {
 
   const addProductToCart=(product:ICartProduct)=>{
 
-   const payload=[...state.cart,product]
+   const isInCart = state.cart.some(p=>p._id===product._id && p.size===product.size)
    
+   if(isInCart){
+    const newCart= state.cart.map(p=>{
+      if(p._id===product._id){
+        p.quantity += product.quantity
+      }
+      return p
+    })
+    dispatch({type:'[cart] - Update products in cart',payload:[...newCart]})
+   }else{
+    dispatch({type:'[cart] - Update products in cart',payload:[...state.cart,product]})
+   }
+  }
+  
+  const addProductToCart1=(product:ICartProduct)=>{
+
+   const payload=[...state.cart,product]
+
     const productInCart= state.cart.some(p=>p._id===product._id)
     if(!productInCart) return dispatch({type:'[cart] - Update products in cart',payload})
 
