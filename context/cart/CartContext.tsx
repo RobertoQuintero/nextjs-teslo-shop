@@ -3,7 +3,14 @@ import { createContext } from 'react'
 
 interface ContextProps{
   cart: ICartProduct[];
-  addProductToCart:(product:ICartProduct)=>void
+  numberOfItems: number;
+  subTotal: number;
+  tax: number;
+  total: number;
+
+  addProductToCart:(product:ICartProduct)=>void;
+  updateCartQuantity:(product:ICartProduct)=>void;
+  removeCartProduct:(product:ICartProduct)=>void;
 
 }
 
