@@ -1,5 +1,5 @@
 import NextLink from 'next/link'
-import { initialData } from "@/database/products"
+import { initialData } from "@/database/seed-data"
 import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from "@mui/material"
 import { ItemCounter } from '../ui'
 import { useContext } from 'react'
